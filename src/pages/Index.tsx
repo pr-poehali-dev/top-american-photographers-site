@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,15 @@ const Index = () => {
   const [currentSection, setCurrentSection] = useState('home');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const portfolioImages = [
     {
@@ -83,16 +92,22 @@ const Index = () => {
         </div>
       </nav>
 
-      <section id="home" className="min-h-screen flex items-center justify-center relative pt-20">
-        <div className="absolute inset-0 opacity-40">
+      <section id="home" className="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
+        <div 
+          className="absolute inset-0 opacity-40"
+          style={{ transform: `translateY(${scrollY * 0.5}px)` }}
+        >
           <img 
             src={portfolioImages[0].url} 
             alt="Hero" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
         </div>
-        <div className="relative z-10 text-center px-6 animate-fade-in">
+        <div 
+          className="relative z-10 text-center px-6 animate-fade-in"
+          style={{ transform: `translateY(${scrollY * 0.2}px)`, opacity: Math.max(0, 1 - scrollY / 500) }}
+        >
           <h2 className="text-7xl md:text-9xl font-serif font-light mb-6 tracking-tight">
             Capturing<br/>Moments
           </h2>
@@ -109,7 +124,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="portfolio" className="min-h-screen py-32 px-6">
+      <section id="portfolio" className="min-h-screen py-32 px-6 relative">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-5xl md:text-7xl font-serif font-light mb-4 tracking-tight animate-fade-in">Portfolio</h2>
           <p className="text-muted-foreground text-lg mb-16 animate-fade-in">Selected Works</p>
@@ -122,12 +137,13 @@ const Index = () => {
                 style={{ animationDelay: `${index * 150}ms` }}
                 onClick={() => setSelectedImage(image.url)}
               >
-                <div className="aspect-[3/4] overflow-hidden bg-muted mb-4">
+                <div className="aspect-[3/4] overflow-hidden bg-muted mb-4 relative">
                   <img 
                     src={image.url} 
                     alt={image.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
                   />
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-500"></div>
                 </div>
                 <p className="text-sm tracking-widest text-muted-foreground mb-1">{image.category}</p>
                 <h3 className="text-xl font-serif">{image.title}</h3>
@@ -137,15 +153,15 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="about" className="min-h-screen py-32 px-6 bg-card">
+      <section id="about" className="min-h-screen py-32 px-6 bg-card relative overflow-hidden">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">About</h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="aspect-square overflow-hidden bg-muted animate-fade-in">
+            <div className="aspect-square overflow-hidden bg-muted animate-fade-in group">
               <img 
                 src={portfolioImages[0].url} 
                 alt="About" 
-                className="w-full h-full object-cover grayscale"
+                className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105"
               />
             </div>
             <div className="space-y-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
