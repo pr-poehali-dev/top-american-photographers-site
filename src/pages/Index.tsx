@@ -15,8 +15,6 @@ const Index = () => {
   const [navBackground, setNavBackground] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -117,12 +115,6 @@ const Index = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const filteredImages = activeFilter === 'All' 
-    ? portfolioImages 
-    : portfolioImages.filter(img => img.category === activeFilter);
-
-  const categories = ['All', 'Portrait', 'Editorial', 'Landscape'];
 
   return (
     <>
