@@ -13,11 +13,16 @@ const Index = () => {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [navBackground, setNavBackground] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
       setNavBackground(window.scrollY > 100);
+      setShowScrollTop(window.scrollY > 500);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -65,8 +70,29 @@ const Index = () => {
       url: 'https://cdn.poehali.dev/projects/ff6e0a5b-b2b3-4365-a204-b56446de2a75/files/3cc0f44b-a0fc-466f-a071-8f239ecfe22b.jpg',
       title: 'Editorial Fashion',
       category: 'Editorial'
+    },
+    {
+      url: 'https://cdn.poehali.dev/projects/ff6e0a5b-b2b3-4365-a204-b56446de2a75/files/e0211d55-a270-41f3-aa3e-82b1f27b5df5.jpg',
+      title: 'Portrait Study II',
+      category: 'Portrait'
+    },
+    {
+      url: 'https://cdn.poehali.dev/projects/ff6e0a5b-b2b3-4365-a204-b56446de2a75/files/3cc0f44b-a0fc-466f-a071-8f239ecfe22b.jpg',
+      title: 'Fashion Editorial',
+      category: 'Editorial'
+    },
+    {
+      url: 'https://cdn.poehali.dev/projects/ff6e0a5b-b2b3-4365-a204-b56446de2a75/files/2a23452a-4500-4523-9411-a590e1044b92.jpg',
+      title: 'Urban Landscape',
+      category: 'Landscape'
     }
   ];
+
+  const filteredImages = activeFilter === 'All' 
+    ? portfolioImages 
+    : portfolioImages.filter(img => img.category === activeFilter);
+
+  const categories = ['All', 'Portrait', 'Editorial', 'Landscape'];
 
   const blogPosts = [
     {
@@ -87,6 +113,16 @@ const Index = () => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const filteredImages = activeFilter === 'All' 
+    ? portfolioImages 
+    : portfolioImages.filter(img => img.category === activeFilter);
+
+  const categories = ['All', 'Portrait', 'Editorial', 'Landscape'];
 
   return (
     <>
@@ -189,10 +225,26 @@ const Index = () => {
       <section id="portfolio" className="min-h-screen py-32 px-6 relative transition-all duration-1000">
         <div className="max-w-7xl mx-auto">
           <h2 className={`text-5xl md:text-7xl font-serif font-light mb-4 tracking-tight transition-all duration-1000 ${visibleSections.has('portfolio') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Portfolio</h2>
-          <p className={`text-muted-foreground text-lg mb-16 transition-all duration-1000 delay-150 ${visibleSections.has('portfolio') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Selected Works</p>
+          <p className={`text-muted-foreground text-lg mb-8 transition-all duration-1000 delay-150 ${visibleSections.has('portfolio') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Selected Works</p>
           
+          <div className={`flex flex-wrap gap-4 mb-12 justify-center transition-all duration-1000 delay-300 ${visibleSections.has('portfolio') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveFilter(category)}
+                className={`px-6 py-2 text-sm tracking-widest transition-all duration-300 border ${
+                  activeFilter === category
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-transparent text-foreground border-border hover:border-primary hover:text-primary'
+                }`}
+              >
+                {category.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {portfolioImages.map((image, index) => (
+            {filteredImages.map((image, index) => (
               <div 
                 key={index} 
                 className={`group cursor-pointer transition-all duration-700`}
@@ -407,6 +459,16 @@ const Index = () => {
           />
         </div>
       )}
+
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className={`fixed bottom-8 right-8 z-40 bg-primary text-primary-foreground p-4 rounded-full shadow-lg transition-all duration-500 hover:scale-110 hover:shadow-xl ${
+          showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+        }`}
+        aria-label="Scroll to top"
+      >
+        <Icon name="ArrowUp" size={24} />
+      </button>
     </div>
     </>
   );
