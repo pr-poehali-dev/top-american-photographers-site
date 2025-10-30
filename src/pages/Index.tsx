@@ -11,13 +11,23 @@ const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
+  const [navBackground, setNavBackground] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
+      setNavBackground(window.scrollY > 100);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -79,18 +89,49 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+    <>
+      {isLoading && (
+        <div className="fixed inset-0 z-[100] bg-background flex items-center justify-center animate-fade-in-slow">
+          <div className="text-center">
+            <h1 className="text-6xl md:text-8xl font-serif font-light tracking-wider mb-6 animate-fade-in">BURKOVICH</h1>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="min-h-screen bg-background text-foreground">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${navBackground ? 'bg-background/95 backdrop-blur-lg border-b border-border shadow-lg' : 'bg-background/60 backdrop-blur-sm border-b border-border/50'}`}>
+        <div className={`max-w-7xl mx-auto px-6 transition-all duration-500 ${navBackground ? 'py-4' : 'py-6'}`}>
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-serif font-light tracking-wider">BURKOVICH</h1>
+            <h1 className={`font-serif font-light tracking-wider transition-all duration-500 ${navBackground ? 'text-xl' : 'text-2xl'}`}>BURKOVICH</h1>
             <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection('home')} className="text-sm tracking-widest hover:text-primary transition-colors">HOME</button>
-              <button onClick={() => scrollToSection('portfolio')} className="text-sm tracking-widest hover:text-primary transition-colors">PORTFOLIO</button>
-              <button onClick={() => scrollToSection('about')} className="text-sm tracking-widest hover:text-primary transition-colors">ABOUT</button>
-              <button onClick={() => scrollToSection('services')} className="text-sm tracking-widest hover:text-primary transition-colors">SERVICES</button>
-              <button onClick={() => scrollToSection('blog')} className="text-sm tracking-widest hover:text-primary transition-colors">BLOG</button>
-              <button onClick={() => scrollToSection('contact')} className="text-sm tracking-widest hover:text-primary transition-colors">CONTACT</button>
+              <button onClick={() => scrollToSection('home')} className="text-sm tracking-widest hover:text-primary transition-all relative group">
+                HOME
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+              </button>
+              <button onClick={() => scrollToSection('portfolio')} className="text-sm tracking-widest hover:text-primary transition-all relative group">
+                PORTFOLIO
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+              </button>
+              <button onClick={() => scrollToSection('about')} className="text-sm tracking-widest hover:text-primary transition-all relative group">
+                ABOUT
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+              </button>
+              <button onClick={() => scrollToSection('services')} className="text-sm tracking-widest hover:text-primary transition-all relative group">
+                SERVICES
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+              </button>
+              <button onClick={() => scrollToSection('blog')} className="text-sm tracking-widest hover:text-primary transition-all relative group">
+                BLOG
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+              </button>
+              <button onClick={() => scrollToSection('contact')} className="text-sm tracking-widest hover:text-primary transition-all relative group">
+                CONTACT
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+              </button>
             </div>
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild className="md:hidden">
@@ -367,6 +408,7 @@ const Index = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
