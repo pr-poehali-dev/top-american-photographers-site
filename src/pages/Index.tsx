@@ -10,6 +10,7 @@ const Index = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +18,26 @@ const Index = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => new Set(prev).add(entry.target.id));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const sections = document.querySelectorAll('section[id]');
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
   }, []);
 
   const portfolioImages = [
@@ -124,17 +145,21 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="portfolio" className="min-h-screen py-32 px-6 relative">
+      <section id="portfolio" className="min-h-screen py-32 px-6 relative transition-all duration-1000">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-4 tracking-tight animate-fade-in">Portfolio</h2>
-          <p className="text-muted-foreground text-lg mb-16 animate-fade-in">Selected Works</p>
+          <h2 className={`text-5xl md:text-7xl font-serif font-light mb-4 tracking-tight transition-all duration-1000 ${visibleSections.has('portfolio') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Portfolio</h2>
+          <p className={`text-muted-foreground text-lg mb-16 transition-all duration-1000 delay-150 ${visibleSections.has('portfolio') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Selected Works</p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {portfolioImages.map((image, index) => (
               <div 
                 key={index} 
-                className="group cursor-pointer animate-fade-in"
-                style={{ animationDelay: `${index * 150}ms` }}
+                className={`group cursor-pointer transition-all duration-700`}
+                style={{ 
+                  transitionDelay: `${index * 150}ms`,
+                  opacity: visibleSections.has('portfolio') ? 1 : 0,
+                  transform: visibleSections.has('portfolio') ? 'translateY(0)' : 'translateY(30px)'
+                }}
                 onClick={() => setSelectedImage(image.url)}
               >
                 <div className="aspect-[3/4] overflow-hidden bg-muted mb-4 relative">
@@ -153,18 +178,18 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="about" className="min-h-screen py-32 px-6 bg-card relative overflow-hidden">
+      <section id="about" className="min-h-screen py-32 px-6 bg-card relative overflow-hidden transition-all duration-1000">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">About</h2>
+          <h2 className={`text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight transition-all duration-1000 ${visibleSections.has('about') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>About</h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="aspect-square overflow-hidden bg-muted animate-fade-in group">
+            <div className={`aspect-square overflow-hidden bg-muted group transition-all duration-1000 ${visibleSections.has('about') ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
               <img 
                 src={portfolioImages[0].url} 
                 alt="About" 
                 className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105"
               />
             </div>
-            <div className="space-y-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <div className={`space-y-6 transition-all duration-1000 delay-300 ${visibleSections.has('about') ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
               <p className="text-lg leading-relaxed text-muted-foreground">
                 Photography for me is a way to stop a moment and preserve an emotion. 
                 Each frame is a dialogue between light, shadow, and the human soul.
@@ -182,11 +207,11 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="services" className="min-h-screen py-32 px-6">
+      <section id="services" className="min-h-screen py-32 px-6 transition-all duration-1000">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Services</h2>
+          <h2 className={`text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight transition-all duration-1000 ${visibleSections.has('services') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Services</h2>
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 border border-border hover:border-primary transition-colors animate-fade-in">
+            <div className={`p-8 border border-border hover:border-primary transition-all duration-700 ${visibleSections.has('services') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
               <Icon name="Camera" size={48} className="mb-6 text-primary" />
               <h3 className="text-2xl font-serif mb-4">Portrait Photography</h3>
               <p className="text-muted-foreground mb-6">
@@ -195,7 +220,7 @@ const Index = () => {
               <p className="text-primary font-light">from $500</p>
             </div>
             
-            <div className="p-8 border border-border hover:border-primary transition-colors animate-fade-in" style={{ animationDelay: '150ms' }}>
+            <div className={`p-8 border border-border hover:border-primary transition-all duration-700 delay-150 ${visibleSections.has('services') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
               <Icon name="Sparkles" size={48} className="mb-6 text-primary" />
               <h3 className="text-2xl font-serif mb-4">Editorial</h3>
               <p className="text-muted-foreground mb-6">
@@ -204,7 +229,7 @@ const Index = () => {
               <p className="text-primary font-light">from $2000</p>
             </div>
             
-            <div className="p-8 border border-border hover:border-primary transition-colors animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <div className={`p-8 border border-border hover:border-primary transition-all duration-700 delay-300 ${visibleSections.has('services') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
               <Icon name="Heart" size={48} className="mb-6 text-primary" />
               <h3 className="text-2xl font-serif mb-4">Wedding Photography</h3>
               <p className="text-muted-foreground mb-6">
@@ -216,15 +241,19 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="blog" className="min-h-screen py-32 px-6 bg-card">
+      <section id="blog" className="min-h-screen py-32 px-6 bg-card transition-all duration-1000">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Blog</h2>
+          <h2 className={`text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight transition-all duration-1000 ${visibleSections.has('blog') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Blog</h2>
           <div className="space-y-12">
             {blogPosts.map((post, index) => (
               <article 
                 key={index} 
-                className="border-b border-border pb-12 last:border-b-0 animate-fade-in"
-                style={{ animationDelay: `${index * 150}ms` }}
+                className={`border-b border-border pb-12 last:border-b-0 transition-all duration-700`}
+                style={{ 
+                  transitionDelay: `${index * 150}ms`,
+                  opacity: visibleSections.has('blog') ? 1 : 0,
+                  transform: visibleSections.has('blog') ? 'translateX(0)' : 'translateX(-20px)'
+                }}
               >
                 <p className="text-sm text-muted-foreground tracking-widest mb-3">{post.date}</p>
                 <h3 className="text-3xl md:text-4xl font-serif mb-4 hover:text-primary transition-colors cursor-pointer">
@@ -242,11 +271,11 @@ const Index = () => {
         </div>
       </section>
 
-      <section id="contact" className="min-h-screen py-32 px-6">
+      <section id="contact" className="min-h-screen py-32 px-6 transition-all duration-1000">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Contact</h2>
+          <h2 className={`text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight transition-all duration-1000 ${visibleSections.has('contact') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>Contact</h2>
           <div className="grid md:grid-cols-2 gap-16">
-            <div className="space-y-8 animate-fade-in">
+            <div className={`space-y-8 transition-all duration-1000 ${visibleSections.has('contact') ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
               <div>
                 <h3 className="text-2xl font-serif mb-4">Let's Work Together</h3>
                 <p className="text-muted-foreground">
@@ -274,7 +303,7 @@ const Index = () => {
               </div>
             </div>
             
-            <form className="space-y-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <form className={`space-y-6 transition-all duration-1000 delay-300 ${visibleSections.has('contact') ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
               <div>
                 <Input 
                   placeholder="Your name" 
