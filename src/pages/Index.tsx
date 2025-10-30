@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState('home');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const portfolioImages = [
     {
@@ -28,19 +30,20 @@ const Index = () => {
 
   const blogPosts = [
     {
-      title: 'Философия света в портретной съёмке',
-      date: '15 октября 2025',
-      excerpt: 'Свет — это не просто инструмент, это язык, на котором мы говорим с камерой и зрителем.'
+      title: 'The Philosophy of Light in Portrait Photography',
+      date: 'October 15, 2025',
+      excerpt: 'Light is not just a tool, it is the language through which we speak with the camera and the viewer.'
     },
     {
-      title: 'Минимализм в современной фотографии',
-      date: '8 октября 2025',
-      excerpt: 'Меньше — значит больше. Как убрать лишнее и оставить только суть.'
+      title: 'Minimalism in Contemporary Photography',
+      date: 'October 8, 2025',
+      excerpt: 'Less is more. How to remove the excess and leave only the essence.'
     }
   ];
 
   const scrollToSection = (sectionId: string) => {
     setCurrentSection(sectionId);
+    setMobileMenuOpen(false);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -50,18 +53,32 @@ const Index = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-serif font-light tracking-wider">ALEXANDER NOIR</h1>
+            <h1 className="text-2xl font-serif font-light tracking-wider">BURKOVICH</h1>
             <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => scrollToSection('home')} className="text-sm tracking-widest hover:text-primary transition-colors">ГЛАВНАЯ</button>
-              <button onClick={() => scrollToSection('portfolio')} className="text-sm tracking-widest hover:text-primary transition-colors">ПОРТФОЛИО</button>
-              <button onClick={() => scrollToSection('about')} className="text-sm tracking-widest hover:text-primary transition-colors">ОБО МНЕ</button>
-              <button onClick={() => scrollToSection('services')} className="text-sm tracking-widest hover:text-primary transition-colors">УСЛУГИ</button>
-              <button onClick={() => scrollToSection('blog')} className="text-sm tracking-widest hover:text-primary transition-colors">БЛОГ</button>
-              <button onClick={() => scrollToSection('contact')} className="text-sm tracking-widest hover:text-primary transition-colors">КОНТАКТЫ</button>
+              <button onClick={() => scrollToSection('home')} className="text-sm tracking-widest hover:text-primary transition-colors">HOME</button>
+              <button onClick={() => scrollToSection('portfolio')} className="text-sm tracking-widest hover:text-primary transition-colors">PORTFOLIO</button>
+              <button onClick={() => scrollToSection('about')} className="text-sm tracking-widest hover:text-primary transition-colors">ABOUT</button>
+              <button onClick={() => scrollToSection('services')} className="text-sm tracking-widest hover:text-primary transition-colors">SERVICES</button>
+              <button onClick={() => scrollToSection('blog')} className="text-sm tracking-widest hover:text-primary transition-colors">BLOG</button>
+              <button onClick={() => scrollToSection('contact')} className="text-sm tracking-widest hover:text-primary transition-colors">CONTACT</button>
             </div>
-            <button className="md:hidden">
-              <Icon name="Menu" size={24} />
-            </button>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <button>
+                  <Icon name="Menu" size={24} />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <nav className="flex flex-col gap-6 mt-8">
+                  <button onClick={() => scrollToSection('home')} className="text-lg tracking-widest hover:text-primary transition-colors text-left">HOME</button>
+                  <button onClick={() => scrollToSection('portfolio')} className="text-lg tracking-widest hover:text-primary transition-colors text-left">PORTFOLIO</button>
+                  <button onClick={() => scrollToSection('about')} className="text-lg tracking-widest hover:text-primary transition-colors text-left">ABOUT</button>
+                  <button onClick={() => scrollToSection('services')} className="text-lg tracking-widest hover:text-primary transition-colors text-left">SERVICES</button>
+                  <button onClick={() => scrollToSection('blog')} className="text-lg tracking-widest hover:text-primary transition-colors text-left">BLOG</button>
+                  <button onClick={() => scrollToSection('contact')} className="text-lg tracking-widest hover:text-primary transition-colors text-left">CONTACT</button>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </nav>
@@ -80,22 +97,22 @@ const Index = () => {
             Capturing<br/>Moments
           </h2>
           <p className="text-xl md:text-2xl text-muted-foreground font-light tracking-wide max-w-2xl mx-auto mb-12">
-            Фотография как искусство видеть невидимое
+            Photography as the art of seeing the invisible
           </p>
           <Button 
             onClick={() => scrollToSection('portfolio')}
             variant="outline" 
             className="border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-6 text-lg tracking-widest"
           >
-            СМОТРЕТЬ РАБОТЫ
+            VIEW WORK
           </Button>
         </div>
       </section>
 
       <section id="portfolio" className="min-h-screen py-32 px-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-4 tracking-tight animate-fade-in">Портфолио</h2>
-          <p className="text-muted-foreground text-lg mb-16 animate-fade-in">Избранные работы</p>
+          <h2 className="text-5xl md:text-7xl font-serif font-light mb-4 tracking-tight animate-fade-in">Portfolio</h2>
+          <p className="text-muted-foreground text-lg mb-16 animate-fade-in">Selected Works</p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {portfolioImages.map((image, index) => (
@@ -122,7 +139,7 @@ const Index = () => {
 
       <section id="about" className="min-h-screen py-32 px-6 bg-card">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Обо мне</h2>
+          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">About</h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="aspect-square overflow-hidden bg-muted animate-fade-in">
               <img 
@@ -133,17 +150,16 @@ const Index = () => {
             </div>
             <div className="space-y-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
               <p className="text-lg leading-relaxed text-muted-foreground">
-                Фотография для меня — это способ остановить мгновение и сохранить эмоцию. 
-                Каждый кадр — это диалог между светом, тенью и человеческой душой.
+                Photography for me is a way to stop a moment and preserve an emotion. 
+                Each frame is a dialogue between light, shadow, and the human soul.
               </p>
               <p className="text-lg leading-relaxed text-muted-foreground">
-                Моя работа вдохновлена классиками американской фотографии: Ричардом Аведоном, 
-                Ирвингом Пенном, Анни Лейбовиц. Я стремлюсь создавать изображения, 
-                которые живут вне времени.
+                My work is inspired by the classics of American photography: Richard Avedon, 
+                Irving Penn, Annie Leibovitz. I strive to create images that live outside of time.
               </p>
               <p className="text-lg leading-relaxed text-muted-foreground">
-                За 15 лет работы я сотрудничал с ведущими изданиями и брендами, 
-                но главное для меня — оставаться верным своему видению.
+                Over 15 years of work, I have collaborated with leading publications and brands, 
+                but the most important thing for me is to remain true to my vision.
               </p>
             </div>
           </div>
@@ -152,33 +168,33 @@ const Index = () => {
 
       <section id="services" className="min-h-screen py-32 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Услуги</h2>
+          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Services</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-8 border border-border hover:border-primary transition-colors animate-fade-in">
               <Icon name="Camera" size={48} className="mb-6 text-primary" />
-              <h3 className="text-2xl font-serif mb-4">Портретная съёмка</h3>
+              <h3 className="text-2xl font-serif mb-4">Portrait Photography</h3>
               <p className="text-muted-foreground mb-6">
-                Индивидуальные и семейные портреты, созданные с вниманием к деталям и атмосфере.
+                Individual and family portraits created with attention to detail and atmosphere.
               </p>
-              <p className="text-primary font-light">от $500</p>
+              <p className="text-primary font-light">from $500</p>
             </div>
             
             <div className="p-8 border border-border hover:border-primary transition-colors animate-fade-in" style={{ animationDelay: '150ms' }}>
               <Icon name="Sparkles" size={48} className="mb-6 text-primary" />
               <h3 className="text-2xl font-serif mb-4">Editorial</h3>
               <p className="text-muted-foreground mb-6">
-                Концептуальные съёмки для журналов, брендов и рекламных кампаний.
+                Conceptual shoots for magazines, brands, and advertising campaigns.
               </p>
-              <p className="text-primary font-light">от $2000</p>
+              <p className="text-primary font-light">from $2000</p>
             </div>
             
             <div className="p-8 border border-border hover:border-primary transition-colors animate-fade-in" style={{ animationDelay: '300ms' }}>
               <Icon name="Heart" size={48} className="mb-6 text-primary" />
-              <h3 className="text-2xl font-serif mb-4">Свадебная съёмка</h3>
+              <h3 className="text-2xl font-serif mb-4">Wedding Photography</h3>
               <p className="text-muted-foreground mb-6">
-                Документальный стиль, который сохраняет подлинность момента и эмоций.
+                Documentary style that preserves the authenticity of the moment and emotions.
               </p>
-              <p className="text-primary font-light">от $3000</p>
+              <p className="text-primary font-light">from $3000</p>
             </div>
           </div>
         </div>
@@ -186,7 +202,7 @@ const Index = () => {
 
       <section id="blog" className="min-h-screen py-32 px-6 bg-card">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Блог</h2>
+          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Blog</h2>
           <div className="space-y-12">
             {blogPosts.map((post, index) => (
               <article 
@@ -202,7 +218,7 @@ const Index = () => {
                   {post.excerpt}
                 </p>
                 <Button variant="link" className="text-primary p-0 h-auto">
-                  Читать далее <Icon name="ArrowRight" size={16} className="ml-2" />
+                  Read more <Icon name="ArrowRight" size={16} className="ml-2" />
                 </Button>
               </article>
             ))}
@@ -212,19 +228,19 @@ const Index = () => {
 
       <section id="contact" className="min-h-screen py-32 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Контакты</h2>
+          <h2 className="text-5xl md:text-7xl font-serif font-light mb-12 tracking-tight animate-fade-in">Contact</h2>
           <div className="grid md:grid-cols-2 gap-16">
             <div className="space-y-8 animate-fade-in">
               <div>
-                <h3 className="text-2xl font-serif mb-4">Давайте работать вместе</h3>
+                <h3 className="text-2xl font-serif mb-4">Let's Work Together</h3>
                 <p className="text-muted-foreground">
-                  Заполните форму или напишите напрямую. Я отвечу в течение 24 часов.
+                  Fill out the form or write directly. I will respond within 24 hours.
                 </p>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <Icon name="Mail" size={20} className="text-primary" />
-                  <span>hello@alexandernoir.com</span>
+                  <span>hello@burkovich.com</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <Icon name="Phone" size={20} className="text-primary" />
@@ -245,7 +261,7 @@ const Index = () => {
             <form className="space-y-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
               <div>
                 <Input 
-                  placeholder="Ваше имя" 
+                  placeholder="Your name" 
                   className="bg-muted border-border focus:border-primary"
                 />
               </div>
@@ -258,13 +274,13 @@ const Index = () => {
               </div>
               <div>
                 <Input 
-                  placeholder="Тема" 
+                  placeholder="Subject" 
                   className="bg-muted border-border focus:border-primary"
                 />
               </div>
               <div>
                 <Textarea 
-                  placeholder="Сообщение" 
+                  placeholder="Message" 
                   rows={6}
                   className="bg-muted border-border focus:border-primary resize-none"
                 />
@@ -272,7 +288,7 @@ const Index = () => {
               <Button 
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-6 text-lg tracking-widest"
               >
-                ОТПРАВИТЬ
+                SEND
               </Button>
             </form>
           </div>
@@ -282,7 +298,7 @@ const Index = () => {
       <footer className="border-t border-border py-12 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-muted-foreground text-sm tracking-widest">
-            © 2025 ALEXANDER NOIR. ALL RIGHTS RESERVED.
+            © 2025 BURKOVICH. ALL RIGHTS RESERVED.
           </p>
         </div>
       </footer>
